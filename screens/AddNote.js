@@ -13,6 +13,8 @@ import {
 import Colors from "../constants/Colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useForm, Controller } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import * as appActions from "../store/actions/app"; // importe ttes mes actions
 
 function AddNote(props) {
   // Variable
@@ -21,15 +23,29 @@ function AddNote(props) {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const project = props.route.params.project;
+  const dispatch = useDispatch(); // pour pouvoir lancer les actions
+
+  // Fonction
+  const onSubmit = (data) => {
+    //console.log(data);
+    const note = {
+      content: data.note,
+      createDate: new Date(),
+      projectId: project.id,
+    };
+    dispatch(appActions.addNote(note));
+    props.navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
         <Text style={styles.title}>Ajouter une note</Text>
         <View style={styles.containerInput}>
-          <Text style={styles.projectName}>Projet</Text>
+          <Text style={styles.projectName}>{project.name}</Text>
           <Controller
-            name="name"
+            name="note"
             control={control}
             rules={{ required: true }} // régle pour les conditions du formulaire
             render={({ field: { value, onChange } }) => (
@@ -43,7 +59,11 @@ function AddNote(props) {
             )}
           />
         </View>
-        <TouchableOpacity activeOpacity={0.8} style={styles.submit}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.submit}
+          onPress={handleSubmit(onSubmit)}
+        >
           <Text style={styles.submitText}>Ajouter</Text>
           <Ionicons name="arrow-forward" size={23} color="white" />
         </TouchableOpacity>

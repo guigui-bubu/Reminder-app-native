@@ -1,6 +1,6 @@
 // Librairies
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Text,
   View,
@@ -14,10 +14,26 @@ import moment from "moment";
 import "moment/locale/fr"; // pour mettre la date en français
 import { LinearGradient } from "expo-linear-gradient";
 import Colors from "../constants/Colors";
+import { useSelector, useDispatch } from "react-redux";
+import * as appActions from "../store/actions/app"; // importe ttes mes actions
 
 function Home(props) {
   // Variables
   const date = moment().format("LL");
+  const notes = useSelector((state) => state.notes);
+  const projects = useSelector((state) => state.projects);
+  const dispatch = useDispatch(); // pour pouvoir lancer les actions
+
+  //console.log(notes);
+
+  // Cycle de vie
+  useEffect(() => {
+    // action pour charger les notes
+    dispatch(appActions.getNotes()); // pour recuperer nos notes
+
+    // action pour charger les projets
+    dispatch(appActions.getProjects()); // pour recuperer nos projets
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -26,12 +42,12 @@ function Home(props) {
 
         <View style={styles.cards}>
           <LinearGradient colors={["#ED89AF", "#F45384"]} style={styles.card}>
-            <Text style={styles.cardNumber}>0</Text>
+            <Text style={styles.cardNumber}>{notes.length}</Text>
             <Text style={styles.cardText}>Notes</Text>
           </LinearGradient>
 
           <LinearGradient colors={["#FED3A0", "#FFA63E"]} style={styles.card}>
-            <Text style={styles.cardNumber}>0</Text>
+            <Text style={styles.cardNumber}>{projects.length}</Text>
             <Text style={styles.cardText}>Projets</Text>
           </LinearGradient>
         </View>

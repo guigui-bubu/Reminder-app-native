@@ -13,6 +13,8 @@ import {
 import Colors from "../constants/Colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useForm, Controller } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import * as appActions from "../store/actions/app"; // importe ttes mes actions
 
 function AddProject(props) {
   // Variable
@@ -21,6 +23,16 @@ function AddProject(props) {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const dispatch = useDispatch(); // pour pouvoir lancer les actions
+
+  // Fonction
+  const onSubmit = (data) => {
+    const project = {
+      name: data.name,
+    };
+    dispatch(appActions.addProject(project));
+    props.navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
@@ -42,7 +54,11 @@ function AddProject(props) {
             )}
           />
         </View>
-        <TouchableOpacity activeOpacity={0.8} style={styles.submit}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.submit}
+          onPress={handleSubmit(onSubmit)}
+        >
           <Text style={styles.submitText}>Créer</Text>
           <Ionicons name="arrow-forward" size={23} color="white" />
         </TouchableOpacity>

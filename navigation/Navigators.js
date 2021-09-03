@@ -17,7 +17,7 @@ const ModalsNavigator = createStackNavigator();
 
 export const AppModalsNavigator = () => {
   return (
-    <ModalsNavigator.Navigator mode="modal">
+    <ModalsNavigator.Navigator modal>
       <ModalsNavigator.Screen
         name="app"
         component={AppTabNavigator}
