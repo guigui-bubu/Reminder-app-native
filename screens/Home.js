@@ -9,6 +9,7 @@ import {
   Platform,
   Image,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 import moment from "moment";
 import "moment/locale/fr"; // pour mettre la date en français
@@ -16,6 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import Colors from "../constants/Colors";
 import { useSelector, useDispatch } from "react-redux";
 import * as appActions from "../store/actions/app"; // importe ttes mes actions
+import Note from "../components/Notes";
 
 function Home(props) {
   // Variables
@@ -47,26 +49,44 @@ function Home(props) {
           </LinearGradient>
 
           <LinearGradient colors={["#FED3A0", "#FFA63E"]} style={styles.card}>
-            <Text style={styles.cardNumber}>{projects.length}</Text>
-            <Text style={styles.cardText}>Projets</Text>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => props.navigation.navigate("TabProject")}
+            >
+              <Text style={styles.cardNumber}>{projects.length}</Text>
+              <Text style={styles.cardText}>Projets</Text>
+            </TouchableOpacity>
           </LinearGradient>
         </View>
-        <Text style={styles.title}>Notes (0)</Text>
-        <Image source={require("../assets/empty.png")} style={styles.image} />
-        <Text>
-          Commencer à créer votre premier projet pour ajouter note par la suite.
-        </Text>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => props.navigation.navigate("TabProject")} // pour la direction du button navigation.navigate
-        >
-          <LinearGradient
-            colors={["#A996F2", "#8F79FC"]}
-            style={styles.addButton}
-          >
-            <Text style={styles.addButtonText}>Voir mes projets</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        <Text style={styles.title}>Notes ({notes.length})</Text>
+        {!notes[0] ? (
+          <>
+            <Image
+              source={require("../assets/empty.png")}
+              style={styles.image}
+            />
+            <Text>
+              Commencer à créer votre premier projet pour ajouter note par la
+              suite.
+            </Text>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => props.navigation.navigate("TabProject")} // pour la direction du button navigation.navigate
+            >
+              <LinearGradient
+                colors={["#A996F2", "#8F79FC"]}
+                style={styles.addButton}
+              >
+                <Text style={styles.addButtonText}>Voir mes projets</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <FlatList
+            data={notes}
+            renderItem={({ item }) => <Note item={item} />}
+          />
+        )}
       </SafeAreaView>
     </View>
   );

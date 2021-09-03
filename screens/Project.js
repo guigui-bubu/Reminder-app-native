@@ -9,11 +9,13 @@ import {
   TouchableOpacity,
   Platform,
   Image,
+  FlatList,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Colors from "../constants/Colors";
 import { useSelector } from "react-redux";
 import { LinearGradient } from "expo-linear-gradient";
+import Note from "../components/Notes";
 
 function Project(props) {
   const project = props.route.params.item;
@@ -33,7 +35,25 @@ function Project(props) {
           </View>
         </TouchableOpacity>
         <Text style={styles.title}>{project.name}</Text>
-        {notes[0] ? null : (
+        {notes[0] ? (
+          <>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() =>
+                props.navigation.navigate("addNote", { project: project })
+              }
+              style={{ marginBottom: 15 }}
+            >
+              <View style={styles.smallAddBtn}>
+                <Text style={styles.smallAddBtnText}>Ajouter une note</Text>
+              </View>
+            </TouchableOpacity>
+            <FlatList
+              data={notes}
+              renderItem={({ item }) => <Note item={item} />}
+            />
+          </>
+        ) : (
           <>
             <Image
               source={require("../assets/empty.png")}
@@ -52,7 +72,7 @@ function Project(props) {
                 colors={["#A996F2", "#8F79FC"]}
                 style={styles.addBtn}
               >
-                <Text style={styles.addBtnText}>Ajouter une note</Text>
+                <Text style={styles.smallAddBtnText}>Ajouter une note</Text>
               </LinearGradient>
             </TouchableOpacity>
           </>
@@ -91,6 +111,18 @@ const styles = StyleSheet.create({
   addBtnText: {
     color: "white",
     fontSize: 18,
+  },
+  smallAddBtn: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: 30,
+    width: 140,
+    borderRadius: 15,
+    backgroundColor: Colors.primary,
+    alignSelf: "flex-end",
+  },
+  smallAddBtnText: {
+    color: "white",
   },
 });
 
