@@ -7,6 +7,7 @@ import {
   DELETE_PROJECT,
   END_GET_NOTES,
   START_GET_NOTES,
+  SIGNUP,
 } from "../actions/app";
 import moment from "moment";
 
@@ -14,6 +15,8 @@ const initialState = {
   notes: [],
   projects: [],
   loadedNotes: false,
+  userId: null,
+  token: null,
 };
 
 export default (state = initialState, action) => {
@@ -75,6 +78,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loadedNotes: false,
+      };
+    case SIGNUP:
+      return {
+        ...state,
+        userId: action.userId,
+        token: action.token,
       };
     default:
       return state;

@@ -11,6 +11,7 @@ import ProjectsScreen from "../screens/Projects";
 import ProjectScreen from "../screens/Project";
 import AddProjectScreen from "../screens/AddProject";
 import AddNoteScreen from "../screens/AddNote";
+import AuthenticatorScreen from "../screens/Authenticator";
 
 // AppModalsNavigator
 const ModalsNavigator = createStackNavigator();
@@ -18,6 +19,11 @@ const ModalsNavigator = createStackNavigator();
 export const AppModalsNavigator = () => {
   return (
     <ModalsNavigator.Navigator modal>
+      <ModalsNavigator.Screen
+        name="authenticator"
+        component={AuthenticatorScreen}
+        options={{ headerShown: false }}
+      />
       <ModalsNavigator.Screen
         name="app"
         component={AppTabNavigator}

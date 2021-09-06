@@ -1,4 +1,5 @@
 import axios from "../../axios-instance";
+import keys from "../../constants/Keys";
 
 export const ADD_PROJECT = "ADD_PROJECT";
 export const ADD_NOTE = "ADD_NOTE";
@@ -8,6 +9,7 @@ export const DELETE_NOTE = "DELETE_NOTE";
 export const DELETE_PROJECT = "DELETE_PROJECT";
 export const START_GET_NOTES = "START_GET_NOTES";
 export const END_GET_NOTES = "END_GET_NOTES";
+export const SIGNUP = "SIGNUP";
 
 export const addProject = (project) => {
   return (dispatch) => {
@@ -111,5 +113,31 @@ export const deleteProject = (projectId) => {
     axios.delete(`/projects/${projectId}.json`).then((response) => {
       dispatch({ type: DELETE_PROJECT, projectId: projectId });
     });
+  };
+};
+
+export const signup = (email, password) => {
+  return (dispatch) => {
+    axios
+      .post(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${keys.firebase}`,
+        {
+          email: email,
+          password: password,
+          returnSecureToken: true,
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        dispatch({
+          type: SIGNUP,
+          userId: response.data.localId,
+          token: response.data.idToken,
+        });
+      })
+      .catch((error) => {
+        // console.log(error.response.data.error);
+        throw new Error(error.response.data.error); // Pour LANCER ERROR
+      });
   };
 };
