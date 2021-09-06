@@ -10,6 +10,7 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import moment from "moment";
 import "moment/locale/fr"; // pour mettre la date en français
@@ -25,6 +26,7 @@ function Home(props) {
   const notes = useSelector((state) => state.notes);
   const projects = useSelector((state) => state.projects);
   const dispatch = useDispatch(); // pour pouvoir lancer les actions
+  const loadedNotes = useSelector((state) => state.loadeNotes);
 
   //console.log(notes);
 
@@ -36,6 +38,14 @@ function Home(props) {
     // action pour charger les projets
     dispatch(appActions.getProjects()); // pour recuperer nos projets
   }, []);
+
+  if (loadedNotes) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

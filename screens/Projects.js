@@ -10,15 +10,61 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
-  TouchableOpacityBase,
+  Alert,
 } from "react-native";
 import Colors from "../constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import * as appActions from "../store/actions/app"; // importe ttes mes actions
 
 function Projects(props) {
+  //console.log(props);
   // Variables
   const projects = useSelector((state) => state.projects);
+  const dispatch = useDispatch();
+  const notes = useSelector((state) => state.notes);
+
+  // Fonction
+  const onLongPressHandler = (projectId) => {
+    Alert.alert("Que souhaitez-vous faire ?", undefined, [
+      {
+        text: "Annuler",
+        style: "Cancel",
+      },
+      {
+        text: "Supprimer",
+        style: "destructive",
+        onPress: () => onDeleteHandler(projectId),
+      },
+    ]);
+  };
+
+  const onDeleteHandler = (projectId) => {
+    Alert.alert(
+      "Attention",
+      `Vous allez supprimer le projet , en êtes vous sur ?`,
+      [
+        {
+          text: "Annuler",
+          style: "Cancel",
+        },
+        {
+          text: "Supprimer",
+          style: "destructive",
+          onPress: () => {
+            const notesForProject = notes.filter(
+              (note) => note.projectId == projectId
+            );
+            notesForProject.forEach((note) =>
+              dispatch(appActions.deleteNote(note.id))
+            );
+            dispatch(appActions.deleteProject(projectId));
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -64,6 +110,7 @@ function Projects(props) {
                 onPress={() =>
                   props.navigation.navigate("Project", { item: item })
                 }
+                onLongPress={() => onLongPressHandler(item.id)}
               >
                 <View style={styles.project}>
                   <Text style={styles.projectText}>{item.name}</Text>
