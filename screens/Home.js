@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
+  TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import moment from "moment";
 import "moment/locale/fr"; // pour mettre la date en français
@@ -19,6 +21,7 @@ import Colors from "../constants/Colors";
 import { useSelector, useDispatch } from "react-redux";
 import * as appActions from "../store/actions/app"; // importe ttes mes actions
 import Note from "../components/Notes";
+import * as Notifications from "expo-notifications";
 
 function Home(props) {
   // Variables
@@ -47,16 +50,32 @@ function Home(props) {
     );
   }
 
+  // Fonctions pour envoyer des Notifications Locales
+  const onCardPressedHandler = async () => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Wow ! Première notification !",
+        body: "Ceci est le corps de ma première notification",
+        data: null,
+      },
+      trigger: {
+        seconds: 5,
+      },
+    });
+  };
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
         <Text style={styles.date}>{date}</Text>
 
         <View style={styles.cards}>
-          <LinearGradient colors={["#ED89AF", "#F45384"]} style={styles.card}>
-            <Text style={styles.cardNumber}>{notes.length}</Text>
-            <Text style={styles.cardText}>Notes</Text>
-          </LinearGradient>
+          <TouchableWithoutFeedback onPress={onCardPressedHandler}>
+            <LinearGradient colors={["#ED89AF", "#F45384"]} style={styles.card}>
+              <Text style={styles.cardNumber}>{notes.length}</Text>
+              <Text style={styles.cardText}>Notes</Text>
+            </LinearGradient>
+          </TouchableWithoutFeedback>
 
           <LinearGradient colors={["#FED3A0", "#FFA63E"]} style={styles.card}>
             <TouchableOpacity

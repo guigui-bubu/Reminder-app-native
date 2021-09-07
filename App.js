@@ -13,6 +13,15 @@ import AppNavigator from "./navigation/AppNavigators";
 
 const store = createStore(appReducer, applyMiddleware(thunk)); // applyMiddleware => pour ajouter notre Middleware
 
+//Fonction => Attrapeur de Notifications
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: true, // pour les badges notifs
+  }),
+});
+
 export default function App() {
   // Demander la permission pour envoyer des Notifs
   useEffect(() => {
