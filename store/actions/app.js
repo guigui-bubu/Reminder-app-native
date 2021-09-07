@@ -23,6 +23,7 @@ export const addProject = (project) => {
         const newProject = {
           id: response.data.name,
           name: project.name,
+          logo: response.data.logo,
         };
         dispatch({ type: ADD_PROJECT, project: newProject });
       })
@@ -90,6 +91,7 @@ export const getProjects = () => {
           fetchProjects.push({
             id: key,
             name: response.data[key].name,
+            logo: response.data[key].logo,
           });
         }
         dispatch({ type: GET_PROJECTS, projects: fetchProjects });

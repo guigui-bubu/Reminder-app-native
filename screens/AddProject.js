@@ -1,6 +1,6 @@
 // Librairies
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -9,14 +9,18 @@ import {
   Platform,
   TouchableOpacity,
   TextInput,
+  Alert,
 } from "react-native";
 import Colors from "../constants/Colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import * as appActions from "../store/actions/app"; // importe ttes mes actions
+import * as ImagePicker from "expo-image-picker";
 
 function AddProject(props) {
+  // State
+  const [image, setImage] = useState();
   // Variable
   const {
     control,
@@ -27,11 +31,54 @@ function AddProject(props) {
 
   // Fonction
   const onSubmit = (data) => {
+    let image64;
+    if (image) {
+      const uriParts = image.uri.split(".");
+      const fileType = uriParts[uriParts.length - 1];
+      image64 = `data:image/${fileType};base64,${image.base64}`;
+    }
     const project = {
       name: data.name,
+      logo: image64,
     };
     dispatch(appActions.addProject(project));
     props.navigation.goBack();
+  };
+
+  // Permission pour utiliser les photos du phone
+
+  const onPressPickerHandler = async () => {
+    // Permission
+    if (Platform.OS !== "web") {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission refusée",
+          "Désolé, vous n'avez pas accordé l'accés à vos photos"
+        );
+      }
+    }
+
+    // Ouvrir la fênetre
+    let result = await ImagePicker.launchImageLibraryAsync({
+      // permet de lancer la librairie de photo
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, // selectionne le type de donne
+      allowsEditing: true,
+      //aspect: [] //type de format, carré, 16/9, rond
+      quality: 0.8, // qualité du format (image)
+      base64: true,
+    });
+    //console.log(result);
+    if (result.cancelled) {
+      Alert.alert(
+        "impossible d'ajouter une image",
+        "vous avez annulé la selection"
+      );
+      setImage();
+    } else {
+      setImage(result);
+    }
   };
 
   return (
@@ -54,6 +101,21 @@ function AddProject(props) {
             )}
           />
         </View>
+        <TouchableOpacity activeOpacity={0.8} onPress={onPressPickerHandler}>
+          <View
+            style={{
+              ...styles.containerInput,
+              marginTop: 15,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Ionicons size={23} color={Colors.primary} name="images" />
+            <Text style={{ marginLeft: 15 }}>
+              {image ? "Vous avez sélectionné une image" : "Ajouter une image"}
+            </Text>
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.submit}

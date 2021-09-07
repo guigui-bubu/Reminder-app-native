@@ -23,6 +23,7 @@ function Project(props) {
   const notes = useSelector((state) => state.notes).filter(
     (note) => note.projectId == project.id
   );
+  // console.log(project);
   return (
     <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -34,7 +35,17 @@ function Project(props) {
             <Ionicons name="arrow-back" size={23} color="white" />
           </View>
         </TouchableOpacity>
-        <Text style={styles.title}>{project.name}</Text>
+        <View style={styles.informations}>
+          <Image
+            source={
+              project.logo
+                ? { uri: project.logo }
+                : require("../assets/image_default.jpeg")
+            }
+            style={styles.logo}
+          />
+          <Text style={styles.title}>{project.name}</Text>
+        </View>
         {notes[0] ? (
           <>
             <TouchableOpacity
@@ -97,7 +108,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: Platform.OS === "android" ? 50 : 0,
   },
-  title: { fontSize: 30, fontWeight: "bold", marginVertical: 30 },
+  title: {
+    fontSize: 30,
+    fontWeight: "bold",
+    marginTop: 30,
+    color: "white",
+  },
   image: {
     width: 350,
     height: 200,
@@ -123,6 +139,20 @@ const styles = StyleSheet.create({
   },
   smallAddBtnText: {
     color: "white",
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    alignSelf: "center",
+  },
+  informations: {
+    backgroundColor: Colors.primary,
+    marginTop: 15,
+    borderRadius: 15,
+    padding: 20,
+    alignItems: "center",
+    marginBottom: 30,
   },
 });
 
